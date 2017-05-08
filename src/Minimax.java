@@ -1,17 +1,15 @@
 
-import java.awt.Point;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import javax.swing.JOptionPane;
 
 public class Minimax {
 
-    ArrayList<Nodo> arbolMinimax= new ArrayList<Nodo>();
+    ArrayList<Nodo> arbolMinimax= new ArrayList<>();
     final private int nivel;
 
     public Minimax(int nivel) {
-        this.nivel = nivel;
-        crearArbol();
+        this.nivel = nivel;    
     }
 
     public ArrayList<Nodo> getArbol() {
@@ -31,45 +29,44 @@ public class Minimax {
             int profundidad = i;
             ArrayList<Nodo> hijos = new ArrayList();
             System.out.println(arbolMinimax.size()+"profundida="+profundidad);
-            arbolMinimax.stream()
+            arbolMinimax.parallelStream()
                     .filter((Nodo x) -> x.getProfundidad() == profundidad)
                     .forEach((Nodo x) -> {
-                        System.out.print(x);
                         hijos.addAll(x.expandir());
                     });
             arbolMinimax.addAll(hijos);
-            hijos.clear();
         }
-        System.out.println("Termino de crear arbol "+ arbolMinimax.size() );
+        System.out.println("Termino de crear arbol ->"+ arbolMinimax.size() );
     }
 
     private int max_valor(Nodo nodo) {
-        return nodo.isTieneHijos() ? sucesores(nodo).stream().map((Nodo n) -> {
+        return nodo.isTieneHijos() ? sucesores(nodo).parallelStream().map((Nodo n) -> {
             n.setUtilidad(min_valor(n));
             return n;
         }).max((x, y) -> x.getUtilidad() - y.getUtilidad()).get().getUtilidad() : nodo.heuristica();
     }
 
     private int min_valor(Nodo nodo) {
-        return nodo.isTieneHijos() ? sucesores(nodo).stream().map((Nodo n) -> {
+        return nodo.isTieneHijos() ? sucesores(nodo).parallelStream().map((Nodo n) -> {
             n.setUtilidad(max_valor(n));
             return n;
         }).min((x, y) -> x.getUtilidad() - y.getUtilidad()).get().getUtilidad() : nodo.heuristica();
     }
 
     private ArrayList<Nodo> sucesores(Nodo padre) {
-        return arbolMinimax.stream()
+        return arbolMinimax.parallelStream()
                 .filter(x -> padre.equals(x.getPadre()))
                 .collect(Collectors.toCollection(ArrayList<Nodo>::new));
     }
 
     public Nodo desicionMinimax() {
         try {
-            //arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
+            crearArbol();
+            arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
             int valor_desicion_minimax = max_valor(arbolMinimax.get(0));
             Nodo raiz = arbolMinimax.get(0);
             raiz.setUtilidad(valor_desicion_minimax);
-            System.out.println(valor_desicion_minimax);           
+            System.out.println("Desicion minimax ="+valor_desicion_minimax);           
             arbolMinimax.forEach(x -> System.out.println("Desicion minimax ->" + x));
             return sucesores(raiz).parallelStream()
                     .filter(x->x.getUtilidad()==valor_desicion_minimax)

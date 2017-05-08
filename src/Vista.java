@@ -29,10 +29,10 @@ public class Vista implements ActionListener, MouseListener {
     public static final int NIVEL_PRINCIPIANTE = 4;
     public static final int NIVEL_INTERMEDIO = 6;
     public static final int NIVEL_AVANZADO = 8;
-    final public ImageIcon CABALLO_JUGADOR_IMG = scalar_imagen("/img/horseHuman.png");
-    final public ImageIcon CABALLO_PC_IMG = scalar_imagen("/img/horsePc.png");
-    final public ImageIcon AYUDA_IMG = scalar_imagen("/img/verde.png");
-    final public ImageIcon DELETE_IMG = scalar_imagen("/img/delete.png");
+    public ImageIcon CABALLO_JUGADOR_IMG;
+    public ImageIcon CABALLO_PC_IMG;
+    public ImageIcon AYUDA_IMG;
+    public ImageIcon DELETE_IMG;
 
     public static void main(String[] args) {
         new Vista().init();
@@ -55,10 +55,11 @@ public class Vista implements ActionListener, MouseListener {
 
     public void init() {
         frame = new JFrame();
+        frame.setTitle("Horses Go");
         frame.setLayout(new MigLayout());
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(1000, 700));
+        frame.setPreferredSize(new Dimension(700, 700));
         frame.setResizable(false);
         pGlobal = new JPanel(new MigLayout());
         frame.add(pGlobal, "span, width max(100%, 100%) ");
@@ -100,7 +101,7 @@ public class Vista implements ActionListener, MouseListener {
         pMapa.setVisible(true);
         pMapa.setPreferredSize(new Dimension(600, 600));
         pMapa.setBorder(BorderFactory.createTitledBorder("Mapa"));
-        pGlobal.add(pMapa, "growx, growy");
+        pGlobal.add(pMapa, "span, width max(80%, 90%)");
 
         /**
          * acciones listener *
@@ -115,6 +116,7 @@ public class Vista implements ActionListener, MouseListener {
         pMapa.removeAll();
         pMapa.updateUI();
         pMapa.setLayout(new GridLayout(mp.length, mp.length));
+        resize_imagen();
         JLabel lbl;
         Labels = new HashMap<>();
 
@@ -144,8 +146,15 @@ public class Vista implements ActionListener, MouseListener {
     public ImageIcon scalar_imagen(String url) {
         ImageIcon imgIcoUV = new ImageIcon(this.getClass().getResource(url));
         Image image = imgIcoUV.getImage();
-        Image newimg = image.getScaledInstance(80, 80, java.awt.Image.SCALE_SMOOTH);
+        Image newimg = image.getScaledInstance(pMapa.getWidth() / NIVEL - 5, pMapa.getWidth() / NIVEL - 5, java.awt.Image.SCALE_SMOOTH);
         return new ImageIcon(newimg);
+    }
+
+    public void resize_imagen() {
+        CABALLO_JUGADOR_IMG = scalar_imagen("/img/horseHuman.png");
+        CABALLO_PC_IMG = scalar_imagen("/img/horsePc.png");
+        AYUDA_IMG = scalar_imagen("/img/verde.png");
+        DELETE_IMG = scalar_imagen("/img/delete.png");
     }
 
     public void LimpiarAyuda() {
@@ -165,9 +174,19 @@ public class Vista implements ActionListener, MouseListener {
             construirMapa(mp.getMapa());
         }
     }
-    
-   
-    
+
+    public void mover(Point actual_posicion, Point nueva_posicion, JLabel nueva_posicion_label, boolean indicador) {
+        JLabel anterior = Labels.get(actual_posicion);
+        anterior.setIcon(DELETE_IMG);
+        nueva_posicion_label.setIcon(indicador ? CABALLO_JUGADOR_IMG : CABALLO_PC_IMG);
+        mp.setMapa(indicador ? CABALLO_JUGADOR : CABALLO_PC, Mapa.DESTRUIDA);
+        if (indicador) {
+            CABALLO_JUGADOR = nueva_posicion;
+        } else {
+            CABALLO_PC = nueva_posicion;
+        }
+        mp.setMapa(indicador ? CABALLO_JUGADOR : CABALLO_PC, indicador ? Mapa.CABALLO_JUGADOR_INT : Mapa.CABALLO_PC_INT);
+    }
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -177,7 +196,7 @@ public class Vista implements ActionListener, MouseListener {
             MOVIMIENTOS_JUGADOR_POINT.parallelStream().map((p) -> Labels.get(p)).forEach((lb) -> {
                 lb.setIcon(AYUDA_IMG);
             });
-            if (MOVIMIENTOS_JUGADOR_POINT.size() == 0) {
+            if (MOVIMIENTOS_JUGADOR_POINT.isEmpty()) {
                 JOptionPane.showMessageDialog(frame, "Maquina Gana");
             }
         }
@@ -190,31 +209,17 @@ public class Vista implements ActionListener, MouseListener {
                         .get();
                 if (p != null) {
                     LimpiarAyuda();
-                    JLabel anterior = Labels.get(CABALLO_JUGADOR);
-                    anterior.setIcon(DELETE_IMG);
-                    JLabel nuevo = (JLabel) e.getSource();
-                    nuevo.setIcon(CABALLO_JUGADOR_IMG);
-                    mp.setMapa(CABALLO_JUGADOR, Mapa.DESTRUIDA);
-                    CABALLO_JUGADOR = p;
-                    mp.setMapa(CABALLO_JUGADOR, Mapa.CABALLO_JUGADOR_INT);
+                    mover(CABALLO_JUGADOR, p, (JLabel) e.getSource(), true); 
 
                     //movimiento de la maquina....
-                    new Timer(300, new ActionListener() {
-
+                    new Timer(900, new ActionListener() {
+                        Minimax m = new Minimax(NIVEL);
                         @Override
-                        public void actionPerformed(ActionEvent ae) {
-                            Minimax m = new Minimax(NIVEL);
+                        public void actionPerformed(ActionEvent ae) {                            
                             Nodo n = m.desicionMinimax();
-                            JLabel anterior = Labels.get(CABALLO_PC);
-                            anterior.setIcon(DELETE_IMG);
-                            JLabel nuevo = Labels.get(n.getPosicionPc());
-                            nuevo.setIcon(CABALLO_PC_IMG);
-                            mp.setMapa(CABALLO_PC, Mapa.DESTRUIDA);
-                            CABALLO_PC = n.getPosicionPc();
-                            mp.setMapa(CABALLO_PC, Mapa.CABALLO_PC_INT);                            
+                            mover(CABALLO_PC, n.getPosicionPc(), Labels.get(n.getPosicionPc()), false);
                             ((Timer) ae.getSource()).stop();
                         }
-
                     }).start();
                 }
             } catch (java.util.NoSuchElementException n) {

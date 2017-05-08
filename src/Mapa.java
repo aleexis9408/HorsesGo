@@ -47,13 +47,13 @@ public class Mapa implements Cloneable {
         mapa = Stream.generate(() -> Stream.generate(() -> LIBRE).limit(nivel).mapToInt(x -> x).toArray())
                 .limit(nivel)
                 .toArray(int[][]::new);
-//        Vista.CABALLO_JUGADOR = posicionesRandom(nivel);
-//        do {
-//            Vista.CABALLO_PC = posicionesRandom(nivel);
-//        } while (Vista.CABALLO_JUGADOR.equals(Vista.CABALLO_PC));// no repitir posiciones
+        Vista.CABALLO_JUGADOR = posicionesRandom(nivel);
+        do {
+            Vista.CABALLO_PC = posicionesRandom(nivel);
+        } while (Vista.CABALLO_JUGADOR.equals(Vista.CABALLO_PC));// no repitir posiciones
 
-        Vista.CABALLO_JUGADOR = new Point(3, 1);
-        Vista.CABALLO_PC = new Point(0, 0);
+//        Vista.CABALLO_JUGADOR = new Point(3, 1);
+//        Vista.CABALLO_PC = new Point(0, 0);
         //System.out.println(Vista.CABALLO_JUGADOR);
         mapa[Vista.CABALLO_JUGADOR.y][Vista.CABALLO_JUGADOR.x] = CABALLO_JUGADOR_INT;
         mapa[Vista.CABALLO_PC.y][Vista.CABALLO_PC.x] = CABALLO_PC_INT;

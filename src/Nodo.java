@@ -18,7 +18,8 @@ public class Nodo {
 
     @Override
     public String toString() {
-        return "Nodo{ Utilidad=" + utilidad
+        return "Nodo{ "
+                + "Utilidad=" + utilidad
                 + ", profundidad=" + profundidad
                // + ", mapa=" + mapaEstado
                 + ", PosicionJugador=" + posicionJugador
