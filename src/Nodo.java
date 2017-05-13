@@ -1,6 +1,7 @@
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Nodo {
 
@@ -127,9 +128,9 @@ public class Nodo {
                 this.getTipoNodo() == TIPO_NODO_MAX ? this.posicionPc : this.posicionJugador,
                 this.mapaEstado);
         //System.out.println("al expandir-> " + hijosMovimientos.size());
-        hijosMovimientos.parallelStream().forEach((p) -> {
-            hijos.add(this.auxiliarHijo(p));
-        });
+        hijos = hijosMovimientos.parallelStream()
+                .map(p->auxiliarHijo(p))
+                .collect(Collectors.toCollection(ArrayList<Nodo>::new));      
         //System.out.println("termina de expandir................ hijos->"+hijos.size());
         this.setTieneHijos(!hijos.isEmpty());
         this.setExpandido(true);

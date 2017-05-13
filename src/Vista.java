@@ -108,7 +108,7 @@ public class Vista implements ActionListener, MouseListener {
          */
         menuCargar.addActionListener(this);
         menuReiniciar.addActionListener(this);
-
+        pMapa.addMouseListener(this);
         frame.pack();
     }
 
@@ -119,7 +119,6 @@ public class Vista implements ActionListener, MouseListener {
         resize_imagen();
         JLabel lbl;
         Labels = new HashMap<>();
-
         for (int i = 0; i < mp.length; i++) {
             for (int j = 0; j < mp.length; j++) {
                 lbl = new JLabel();
@@ -172,6 +171,15 @@ public class Vista implements ActionListener, MouseListener {
             NIVEL = nivel;
             mp = new Mapa(nivel);
             construirMapa(mp.getMapa());
+            new Timer(900, new ActionListener() {
+                Minimax m = new Minimax(NIVEL);
+                @Override
+                public void actionPerformed(ActionEvent ae) {
+                    Nodo n = m.desicionMinimax();
+                    mover(CABALLO_PC, n.getPosicionPc(), Labels.get(n.getPosicionPc()), false);
+                    ((Timer) ae.getSource()).stop();
+                }
+            }).start();
         }
     }
 
@@ -200,6 +208,7 @@ public class Vista implements ActionListener, MouseListener {
                 JOptionPane.showMessageDialog(frame, "Maquina Gana");
             }
         }
+        
 
         if (!MOVIMIENTOS_JUGADOR_POINT.isEmpty() && e.getSource() != Labels.get(CABALLO_JUGADOR)) {
             try {
@@ -209,13 +218,14 @@ public class Vista implements ActionListener, MouseListener {
                         .get();
                 if (p != null) {
                     LimpiarAyuda();
-                    mover(CABALLO_JUGADOR, p, (JLabel) e.getSource(), true); 
+                    mover(CABALLO_JUGADOR, p, (JLabel) e.getSource(), true);
 
                     //movimiento de la maquina....
-                    new Timer(900, new ActionListener() {
+                    new Timer(1000, new ActionListener() {
                         Minimax m = new Minimax(NIVEL);
+
                         @Override
-                        public void actionPerformed(ActionEvent ae) {                            
+                        public void actionPerformed(ActionEvent ae) {
                             Nodo n = m.desicionMinimax();
                             mover(CABALLO_PC, n.getPosicionPc(), Labels.get(n.getPosicionPc()), false);
                             ((Timer) ae.getSource()).stop();

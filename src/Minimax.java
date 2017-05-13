@@ -28,8 +28,8 @@ public class Minimax {
         for (int i = 0; i < nivel; i++) {
             int profundidad = i;
             ArrayList<Nodo> hijos = new ArrayList();
-            System.out.println(arbolMinimax.size()+"profundida="+profundidad);
-            arbolMinimax.parallelStream()
+            //System.out.println(arbolMinimax.size()+"profundida="+profundidad);
+            arbolMinimax.stream()
                     .filter((Nodo x) -> x.getProfundidad() == profundidad)
                     .forEach((Nodo x) -> {
                         hijos.addAll(x.expandir());
@@ -62,12 +62,12 @@ public class Minimax {
     public Nodo desicionMinimax() {
         try {
             crearArbol();
-            arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
+            //arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
             int valor_desicion_minimax = max_valor(arbolMinimax.get(0));
             Nodo raiz = arbolMinimax.get(0);
             raiz.setUtilidad(valor_desicion_minimax);
             System.out.println("Desicion minimax ="+valor_desicion_minimax);           
-            arbolMinimax.forEach(x -> System.out.println("Desicion minimax ->" + x));
+            //arbolMinimax.forEach(x -> System.out.println("Desicion minimax ->" + x));
             return sucesores(raiz).parallelStream()
                     .filter(x->x.getUtilidad()==valor_desicion_minimax)
                     .findFirst()
