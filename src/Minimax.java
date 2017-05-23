@@ -31,12 +31,13 @@ public class Minimax {
         if(nodo.getProfundidad() < nivel)
             nodo.expandir();
         return nodo.getProfundidad() < nivel && nodo.isTieneHijos()
-                ? nodo.getHijos().parallelStream().mapToInt((Nodo n) -> {
+                ? nodo.getHijos().stream().mapToInt((Nodo n) -> {
                     arbolMinimax.add(n);
                     n.setUtilidad(min_valor(n));
                     return n.getUtilidad();
                 }).max().getAsInt(): nodo.heuristica();
         }catch(ArrayIndexOutOfBoundsException n){
+            System.err.println(nodo);
             return max_valor(nodo);
         }
     }
@@ -46,12 +47,13 @@ public class Minimax {
         if(nodo.getProfundidad() < nivel)
             nodo.expandir();
         return nodo.getProfundidad() < nivel && nodo.isTieneHijos()
-                ? nodo.getHijos().parallelStream().mapToInt((Nodo n) -> {
+                ? nodo.getHijos().stream().mapToInt((Nodo n) -> {
                     arbolMinimax.add(n);
                     n.setUtilidad(max_valor(n));
                     return n.getUtilidad();
                 }).min().getAsInt() : nodo.heuristica();
         }catch(ArrayIndexOutOfBoundsException n){
+            System.err.println(nodo);
             return min_valor(nodo);
         }
     }

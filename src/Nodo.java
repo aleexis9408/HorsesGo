@@ -1,6 +1,7 @@
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class Nodo {
@@ -22,13 +23,15 @@ public class Nodo {
     @Override
     public String toString() {
         return "Nodo{ "
-                + "Utilidad=" + utilidad
-                + ", profundidad=" + profundidad
+                + "Utilidad= " + utilidad
+                + ", tipo_nodo= "+ (tipoNodo==TIPO_NODO_MAX ? "MAX" : "MIN")
+                + ", utilidad_hijos= "  + (tieneHijos ? Arrays.toString(hijos.stream().map(x->x.getUtilidad()).toArray()) : utilidad)
+                + ", profundidad= "  + profundidad
                // + ", mapa=" + mapaEstado
-                + ", PosicionJugador=" + posicionJugador
-                + ", posicionPc=" + posicionPc
-                + ", expandido=" + expandido
-                + ", TieneHijos=" + tieneHijos
+                + ", PosicionJugador= " + posicionJugador
+                + ", posicionPc= " + posicionPc
+                //+ ", expandido= " + expandido
+                //+ ", TieneHijos= " + tieneHijos                
                 + '}';
     }
 
