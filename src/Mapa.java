@@ -14,7 +14,6 @@ import java.util.stream.Stream;
  */
 public class Mapa implements Cloneable {
 
-    
     public static final int LIBRE = 0;
     public static final int DESTRUIDA = 1;
     public static final int CABALLO_PC_INT = 2;
@@ -50,10 +49,10 @@ public class Mapa implements Cloneable {
         Vista.CABALLO_JUGADOR = posicionesRandom(nivel);
         do {
             Vista.CABALLO_PC = posicionesRandom(nivel);
-        } while (Vista.CABALLO_JUGADOR.equals(Vista.CABALLO_PC));// no repitir posiciones
+        } while (Vista.CABALLO_JUGADOR.equals(Vista.CABALLO_PC));// no repetir posiciones
 
-//        Vista.CABALLO_JUGADOR = new Point(3, 1);
-//        Vista.CABALLO_PC = new Point(0, 0);
+       // Vista.CABALLO_JUGADOR = new Point(3, 1);
+        //Vista.CABALLO_PC = new Point(0, 0);
         //System.out.println(Vista.CABALLO_JUGADOR);
         mapa[Vista.CABALLO_JUGADOR.y][Vista.CABALLO_JUGADOR.x] = CABALLO_JUGADOR_INT;
         mapa[Vista.CABALLO_PC.y][Vista.CABALLO_PC.x] = CABALLO_PC_INT;
@@ -74,10 +73,8 @@ public class Mapa implements Cloneable {
     @Override
     public String toString() {
         System.out.println("Mapa {");
-        Arrays.stream(mapa).forEach(x->System.out.println(Arrays.toString(x)));
-        return "" ;
+        Arrays.stream(mapa).forEach(x -> System.out.println(Arrays.toString(x)));
+        return "";
     }
-    
-    
 
 }

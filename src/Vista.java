@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
@@ -173,6 +175,7 @@ public class Vista implements ActionListener, MouseListener {
             construirMapa(mp.getMapa());
             new Timer(900, new ActionListener() {
                 Minimax m = new Minimax(NIVEL);
+
                 @Override
                 public void actionPerformed(ActionEvent ae) {
                     Nodo n = m.desicionMinimax();
@@ -198,45 +201,49 @@ public class Vista implements ActionListener, MouseListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
-        if (e.getSource() == Labels.get(CABALLO_JUGADOR)) {
-            MOVIMIENTOS_JUGADOR_POINT = Nodo.getMovimientosPosibles(CABALLO_JUGADOR, mp);
-            MOVIMIENTOS_JUGADOR_POINT.parallelStream().map((p) -> Labels.get(p)).forEach((lb) -> {
-                lb.setIcon(AYUDA_IMG);
-            });
-            if (MOVIMIENTOS_JUGADOR_POINT.isEmpty()) {
-                JOptionPane.showMessageDialog(frame, "Maquina Gana");
-            }
-        }
-        
-
-        if (!MOVIMIENTOS_JUGADOR_POINT.isEmpty() && e.getSource() != Labels.get(CABALLO_JUGADOR)) {
-            try {
-                Point p = MOVIMIENTOS_JUGADOR_POINT.parallelStream()
-                        .filter(x -> e.getSource() == Labels.get(x))
-                        .findFirst()
-                        .get();
-                if (p != null) {
-                    LimpiarAyuda();
-                    mover(CABALLO_JUGADOR, p, (JLabel) e.getSource(), true);
-
-                    //movimiento de la maquina....
-                    new Timer(1000, new ActionListener() {
-                        Minimax m = new Minimax(NIVEL);
-
-                        @Override
-                        public void actionPerformed(ActionEvent ae) {
-                            Nodo n = m.desicionMinimax();
-                            mover(CABALLO_PC, n.getPosicionPc(), Labels.get(n.getPosicionPc()), false);
-                            ((Timer) ae.getSource()).stop();
-                        }
-                    }).start();
+        try {
+            if (e.getSource() == Labels.get(CABALLO_JUGADOR)) {
+                MOVIMIENTOS_JUGADOR_POINT = Nodo.getMovimientosPosibles(CABALLO_JUGADOR, mp);
+                MOVIMIENTOS_JUGADOR_POINT.parallelStream().map((p) -> Labels.get(p)).forEach((lb) -> {
+                    lb.setIcon(AYUDA_IMG);
+                });
+                if (MOVIMIENTOS_JUGADOR_POINT.isEmpty()) {
+                    JOptionPane.showMessageDialog(frame, "Maquina Gana");
                 }
-            } catch (java.util.NoSuchElementException n) {
-
             }
-        }
 
+            if (!MOVIMIENTOS_JUGADOR_POINT.isEmpty() && e.getSource() != Labels.get(CABALLO_JUGADOR)) {
+                try {
+                    Point p = MOVIMIENTOS_JUGADOR_POINT.parallelStream()
+                            .filter(x -> e.getSource() == Labels.get(x))
+                            .findFirst()
+                            .get();
+                    if (p != null) {
+                        LimpiarAyuda();
+                        mover(CABALLO_JUGADOR, p, (JLabel) e.getSource(), true);
+
+                        //movimiento de la maquina....
+                        new Timer(1000, new ActionListener() {
+                            Minimax m = new Minimax(NIVEL);
+
+                            @Override
+                            public void actionPerformed(ActionEvent ae) {
+                                Instant inicio = Instant.now();
+                                Nodo n = m.desicionMinimax();
+                                Instant fin = Instant.now();
+                                System.out.println(Duration.between(inicio, fin).toMillis() + " milisegundos");
+                                mover(CABALLO_PC, n.getPosicionPc(), Labels.get(n.getPosicionPc()), false);
+                                ((Timer) ae.getSource()).stop();
+                            }
+                        }).start();
+                    }
+                } catch (java.util.NoSuchElementException n) {
+
+                }
+            }
+        } catch (java.lang.NullPointerException n) {
+
+        }
     }
 
     @Override

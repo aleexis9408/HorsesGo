@@ -12,7 +12,9 @@ public class Nodo {
     private int tipoNodo, profundidad, utilidad = -8;
     private Nodo padre;
     private Point posicionJugador, posicionPc;
-    private boolean expandido, tieneHijos;
+    private boolean expandido, tieneHijos;    
+    //optimizar el minimax
+    private ArrayList<Nodo> hijos;
 
     public Nodo() {
     }
@@ -34,6 +36,10 @@ public class Nodo {
         return mapaEstado;
     }
 
+    public ArrayList<Nodo> getHijos() {
+        return hijos;
+    }       
+    
     public boolean isTieneHijos() {
         return tieneHijos;
     }
@@ -106,23 +112,19 @@ public class Nodo {
         int MovimientosJugador = getMovimientosPosibles(this.posicionJugador, this.mapaEstado).size();
         int MovimientosPc = getMovimientosPosibles(this.posicionPc, this.mapaEstado).size();
         if (MovimientosJugador == 0 && MovimientosPc == 0) {
-            this.setUtilidad(tipoNodo == TIPO_NODO_MAX ? -99 : 99);
-            return getUtilidad();
+            return tipoNodo == TIPO_NODO_MAX ? -99 : 99;
         }
         if (MovimientosJugador == 0) {
-            this.setUtilidad(99);
-            return getUtilidad();
+            return 99;
         }
         if (MovimientosPc == 0) {
-            this.setUtilidad(-99);
-            return getUtilidad();
+            return -99;
         }
-        this.setUtilidad(MovimientosPc - MovimientosJugador);
-        return getUtilidad();
+        return MovimientosPc - MovimientosJugador;
     }
 
-    public ArrayList expandir() {
-        ArrayList<Nodo> hijos = new ArrayList();
+    public void expandir() {
+        hijos = new ArrayList();
         //System.out.println("al expandir-> " + this.posicionPc + this.posicionJugador);
         ArrayList<Point> hijosMovimientos = getMovimientosPosibles(
                 this.getTipoNodo() == TIPO_NODO_MAX ? this.posicionPc : this.posicionJugador,
@@ -134,7 +136,7 @@ public class Nodo {
         //System.out.println("termina de expandir................ hijos->"+hijos.size());
         this.setTieneHijos(!hijos.isEmpty());
         this.setExpandido(true);
-        return hijos;
+        //return hijos;
     }
 
     public Nodo auxiliarHijo(Point p) {
