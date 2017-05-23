@@ -27,6 +27,7 @@ public class Minimax {
     }
 
     private int max_valor(Nodo nodo) {
+        try{
         if(nodo.getProfundidad() < nivel)
             nodo.expandir();
         return nodo.getProfundidad() < nivel && nodo.isTieneHijos()
@@ -35,9 +36,13 @@ public class Minimax {
                     n.setUtilidad(min_valor(n));
                     return n.getUtilidad();
                 }).max().getAsInt(): nodo.heuristica();
+        }catch(ArrayIndexOutOfBoundsException n){
+            return max_valor(nodo);
+        }
     }
 
     private int min_valor(Nodo nodo) {
+        try{
         if(nodo.getProfundidad() < nivel)
             nodo.expandir();
         return nodo.getProfundidad() < nivel && nodo.isTieneHijos()
@@ -46,6 +51,9 @@ public class Minimax {
                     n.setUtilidad(max_valor(n));
                     return n.getUtilidad();
                 }).min().getAsInt() : nodo.heuristica();
+        }catch(ArrayIndexOutOfBoundsException n){
+            return min_valor(nodo);
+        }
     }
 
     public Nodo desicionMinimax() {
