@@ -66,7 +66,7 @@ public class Minimax {
             /*
              * imprimir *
              */
-            //arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
+            arbolMinimax.forEach(x -> System.out.println("arbol minimax ->" + x));
             System.out.println("Tamaño de arbol ->" + arbolMinimax.size());
             System.out.println("Desicion minimax =" + valor_desicion_minimax);
             return raiz.getHijos().parallelStream()

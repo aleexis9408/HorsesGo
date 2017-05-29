@@ -27,7 +27,7 @@ public class Nodo {
                 + ", tipo_nodo= "+ (tipoNodo==TIPO_NODO_MAX ? "MAX" : "MIN")
                 + ", utilidad_hijos= "  + (tieneHijos ? Arrays.toString(hijos.stream().map(x->x.getUtilidad()).toArray()) : utilidad)
                 + ", profundidad= "  + profundidad
-               // + ", mapa=" + mapaEstado
+                + ", mapa=" + mapaEstado
                 + ", PosicionJugador= " + posicionJugador
                 + ", posicionPc= " + posicionPc
                 //+ ", expandido= " + expandido

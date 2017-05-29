@@ -133,7 +133,9 @@ public class Vista implements ActionListener, MouseListener {
                 if (mp[i][j] == Mapa.CABALLO_PC_INT) {
                     lbl.setIcon(CABALLO_PC_IMG);
                 }
-
+                if (mp[i][j] == Mapa.DESTRUIDA) {
+                    lbl.setIcon(DELETE_IMG);
+                }
                 lbl.setBorder(BorderFactory.createLineBorder(Color.WHITE));
                 lbl.setHorizontalAlignment(JLabel.CENTER);
                 lbl.addMouseListener(this);
@@ -147,7 +149,7 @@ public class Vista implements ActionListener, MouseListener {
     public ImageIcon scalar_imagen(String url) {
         ImageIcon imgIcoUV = new ImageIcon(this.getClass().getResource(url));
         Image image = imgIcoUV.getImage();
-        Image newimg = image.getScaledInstance(pMapa.getWidth() / NIVEL - 5, pMapa.getWidth() / NIVEL - 5, java.awt.Image.SCALE_SMOOTH);
+        Image newimg = image.getScaledInstance(pMapa.getWidth() / NIVEL - 50, pMapa.getWidth() / NIVEL - 50, java.awt.Image.SCALE_SMOOTH);
         return new ImageIcon(newimg);
     }
 
